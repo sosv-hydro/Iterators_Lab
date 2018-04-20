@@ -5,12 +5,13 @@ import java.util.Iterator;
 
 import interfaces.Position;
 import llPositionalList.LinkedPositionalList;
+import llPositionalList.PositionalListElementsBackwardIterator;
 
 public class LinkedPositionalListTester2 {
 
 	public static void main(String[] args) {
 		LinkedPositionalList<Integer> list1 = new LinkedPositionalList<>(); 
-
+		
 		Position<Integer> f = list1.addFirst(1); 
 		Position<Integer> l = list1.addLast(10);
 		Position<Integer> c = list1.addAfter(f, 4); 
@@ -55,9 +56,10 @@ public class LinkedPositionalListTester2 {
 
 	private static void showList2(String msg, LinkedPositionalList<Integer> list) {
 		System.out.print(msg); 
-		Iterator<Integer> iter = list.iterator(); 
-		while (iter.hasNext())
-			System.out.print(iter.next() + " "); 
+		PositionalListElementsBackwardIterator<Integer> revIter = new PositionalListElementsBackwardIterator<>(list); 
+		Iterator<Integer> iter = revIter.iterator(); 
+		while (revIter.hasNext())
+			System.out.print(revIter.next() + " "); 
 		System.out.println(" -- size = " + list.size()); 
 	}
 
