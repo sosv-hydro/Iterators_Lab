@@ -1,6 +1,5 @@
 package llPositionalList;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -221,41 +220,9 @@ public class LinkedPositionalListCopy<E> implements PositionalList<E> {
 		
 	}
 	
-	// Implementation of Iterator and Iterable...
-		private class PositionBackwardsIterator implements Iterator<Position<E>> {
-			private DNode<E> cursor = trailer.getPrev(), 
-				    recent = null; 
-			@Override
-			public boolean hasNext() {
-				return cursor != header;
-			}
-
-			@Override
-			public Position<E> next() throws NoSuchElementException {
-				if (!hasNext())
-					throw new NoSuchElementException("No more elements."); 
-				recent = cursor; 
-				cursor = cursor.getPrev(); 
-				return recent;
-			} 
-			
-			public void remove() throws IllegalStateException { 
-				if (recent == null) 
-					throw new IllegalStateException("remove() not valid at this state of the iterator."); 
-				DNode<E> b = recent.getPrev(); 
-				DNode<E> a = recent.getNext(); 
-				b.setNext(a);
-				a.setPrev(b);
-				recent.clean(); 
-				recent = null; 
-				size--;          // important because we are removing recent directly....
-			}
-			
-		}
 	
 	private class ElementIterator implements Iterator<E> { 
 		Iterator<Position<E>> iterator = posIterator = iteratorMaker.makeIterator(LinkedPositionalListCopy.this);
-				//new PositionIterator(); 
 		@Override
 		public boolean hasNext() {
 			return iterator.hasNext();
@@ -272,28 +239,7 @@ public class LinkedPositionalListCopy<E> implements PositionalList<E> {
 			iterator.remove();
 		}
 	}
-	
-	public class ElementBackwardsIterator implements Iterator<E> { 
-		Iterator<Position<E>> posIterator = new PositionBackwardsIterator();
 
-		@Override
-		public boolean hasNext() {
-			return posIterator.hasNext();
-		}
-
-		@Override
-		public E next() {
-			if(!hasNext())
-				throw new NoSuchElementException("No more elements.");
-			
-			return posIterator.next().getElement();
-		}
-		
-		public void remove() throws IllegalStateException {
-			posIterator.remove();
-		}
-	}
-	
 	private class PositionIterable implements Iterable<Position<E>> {
 
 		@Override
@@ -304,11 +250,11 @@ public class LinkedPositionalListCopy<E> implements PositionalList<E> {
 		
 	}
 	
-	private class PositionBackwardsIterable implements Iterable<Position<E>> {
+	private class PositionBackwardsIterable<E> implements Iterable<Position<E>> {
 
 		@Override
 		public Iterator<Position<E>> iterator() {
-			return new PositionBackwardsIterator();
+			return new PositionalListElementsBackwardIterator(LinkedPositionalListCopy.this);
 		} 
 		
 	}
